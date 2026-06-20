@@ -8,6 +8,25 @@ static void printHeader(const std::string& header) {
     std::cerr << "-----------------------------" << std::endl;
 }
 
+namespace {
+struct Idk {
+    long number = 69;
+};
+}
+
+template <>
+struct std::formatter<Idk> : std::formatter<std::string_view> {
+    [[nodiscard]] auto constexpr format(const Idk& p, format_context& ctx) const noexcept
+    {
+        return formatter<string_view>::format(
+            std::format("(hehe: {})", p.number),
+            ctx
+        );
+    }
+};
+
+
+
 int main() {
     minilog::setLevel(minilog::Level::Debug);
 
@@ -40,4 +59,7 @@ int main() {
 
     printHeader("Standard format args");
     minilog::critical("This is an int: {}", 69);
+    logger.critical("This is a string: {}", 69);
+
+    minilog::info("This is a number: {}", Idk{});
 }
