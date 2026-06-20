@@ -12,6 +12,24 @@
 
 namespace minilog {
 
+struct FormatStringWithSourceLocation : public std::string_view {
+    std::source_location loc;
+
+    template<typename String>
+    constexpr FormatStringWithSourceLocation(
+        const String &string,
+        const std::source_location loc = std::source_location::current()
+    ) noexcept
+        : std::string_view(string), loc(loc) {}
+
+    template<class... Args>
+    [[nodiscard]]
+    constexpr const std::format_string<Args...>& get(void) const noexcept {
+        static_assert(sizeof(std::string_view) == sizeof(std::format_string<Args...>), "This implementation is not compatible with compiled STL");
+        return reinterpret_cast<const std::format_string<Args...> &>(*this);
+    }
+};
+
 class Logger {
 private:
     const std::string loggerName;
@@ -48,9 +66,8 @@ protected:
 
     template <Level level, class... Args>
     inline constexpr void log(
-        const std::format_string<Args...>& fmt,
-        Args&&... args,
-        const std::source_location& loc
+        const FormatStringWithSourceLocation& fmt,
+        Args&&... args
     ) {
         if (this->level > level) {
             return;
@@ -75,11 +92,11 @@ protected:
                     // portable I imagine? Not sure if it builds on windows anyway, and that's an abstraction I can't be
                     // bothered dealing with
                     std::filesystem::path(
-                        loc.file_name()
+                        fmt.loc.file_name()
                     ).filename().string(),
-                    loc.line(),
+                    fmt.loc.line(),
                     loggerName,
-                    std::format<Args...>(fmt, std::forward<Args>(args)...),
+                    std::format<Args...>(fmt.get<Args...>(), std::forward<Args>(args)...),
                     this->supportsColour(level) ? getReset() : ""
                 ),
                 level
@@ -94,10 +111,10 @@ protected:
                     ),
                     magic::levelToString<level>(),
                     std::filesystem::path(
-                        loc.file_name()
+                        fmt.loc.file_name()
                     ).filename().string(),
-                    loc.line(),
-                    std::format<Args...>(fmt, std::forward<Args>(args)...),
+                    fmt.loc.line(),
+                    std::format<Args...>(fmt.get<Args...>(), std::forward<Args>(args)...),
                     this->supportsColour(level) ? getReset() : ""
                 ),
                 level
@@ -112,47 +129,42 @@ public:
 
     template <class... Args>
     inline constexpr void debug(
-        const std::format_string<Args...>& format,
-        Args&&... args,
-        const std::source_location& loc = std::source_location::current()
+        const FormatStringWithSourceLocation& format,
+        Args&&... args
     ) {
-        log<Level::Debug, Args...>(format, std::forward<Args>(args)..., loc);
+        log<Level::Debug, Args...>(format, std::forward<Args>(args)...);
     }
 
     template <class... Args>
-    inline constexpr void info(
-        const std::format_string<Args...>& format,
-        Args&&... args,
-        const std::source_location& loc = std::source_location::current()
+    inline void info(
+        const FormatStringWithSourceLocation& format,
+        Args&&... args
     ) {
-        log<Level::Info, Args...>(format, std::forward<Args>(args)..., loc);
+        log<Level::Info, Args...>(format, std::forward<Args>(args)...);
     }
 
     template <class... Args>
     inline constexpr void warn(
-        const std::format_string<Args...>& format,
-        Args&&... args,
-        const std::source_location& loc = std::source_location::current()
+        const FormatStringWithSourceLocation& format,
+        Args&&... args
     ) {
-        log<Level::Warning, Args...>(format, std::forward<Args>(args)..., loc);
+        log<Level::Warning, Args...>(format, std::forward<Args>(args)...);
     }
 
     template <class... Args>
     inline constexpr void error(
-        const std::format_string<Args...>& format,
-        Args&&... args,
-        const std::source_location& loc = std::source_location::current()
+        const FormatStringWithSourceLocation& format,
+        Args&&... args
     ) {
-        log<Level::Error, Args...>(format, std::forward<Args>(args)..., loc);
+        log<Level::Error, Args...>(format, std::forward<Args>(args)...);
     }
 
     template <class... Args>
     inline constexpr void critical(
-        const std::format_string<Args...>& format,
-        Args&&... args,
-        const std::source_location& loc = std::source_location::current()
+        const FormatStringWithSourceLocation& format,
+        Args&&... args
     ) {
-        log<Level::Critical, Args...>(format, std::forward<Args>(args)..., loc);
+        log<Level::Critical, Args...>(format, std::forward<Args>(args)...);
     }
 
     void setLevel(Level level) {

@@ -37,4 +37,7 @@ int main() {
     minilog::warn("Hi");
     minilog::error("Hi");
     minilog::critical("Hi");
+
+    printHeader("Standard format args");
+    minilog::critical("This is an int: {}", 69);
 }

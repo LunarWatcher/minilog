@@ -13,7 +13,7 @@ This logger is considered mostly feature-complete, aside a plan to maybe add a f
 * Colour when printing to stdout/stderr
 * Formatting via `std::format`
 * Configurable log levels to get more or less yapping
-* `std::source_location` in output through some of the must cursed code I've written (did you know you can put args after a varadic arg list and not have that arg become part of the arg list in the next call?)
+* `std::source_location` in the output
 * Support for named loggers that are separately configured. These are left in for rare edge-cases that need multiple loggers, since supporting it isn't that hard
 * Extremely few configurable options
 

@@ -2,7 +2,6 @@
 
 #include "minilog/logger/Logger.hpp"
 #include "minilog/logger/ConsoleLogger.hpp"
-#include <source_location>
 
 namespace minilog {
 
@@ -15,68 +14,58 @@ inline ConsoleLogger& getGlobalLogger() {
 
 }
 
-template <class... Args>
+template<class... Args>
 inline constexpr void debug(
-    const std::format_string<Args...>& format,
-    Args&&... args,
-    const std::source_location& loc = std::source_location::current()
+    const FormatStringWithSourceLocation& format,
+    Args&&... args
 ) {
     _detail::getGlobalLogger().debug<Args...>(
         format,
-        std::forward<Args>(args)...,
-        loc
+        std::forward<Args>(args)...
     );
 }
 
-template <class... Args>
+template<class... Args>
 inline constexpr void info(
-    const std::format_string<Args...>& format,
-    Args&&... args,
-    const std::source_location& loc = std::source_location::current()
+    const FormatStringWithSourceLocation& format,
+    Args&&... args
 ) {
     _detail::getGlobalLogger().info<Args...>(
         format,
-        std::forward<Args>(args)...,
-        loc
+        std::forward<Args>(args)...
     );
 }
 
-template <class... Args>
+template<class... Args>
 inline constexpr void warn(
-    const std::format_string<Args...>& format,
-    Args&&... args,
-    const std::source_location& loc = std::source_location::current()
+    const FormatStringWithSourceLocation& format,
+    Args&&... args
 ) {
     _detail::getGlobalLogger().warn<Args...>(
         format,
-        std::forward<Args>(args)...,
-        loc
+        std::forward<Args>(args)...
     );
 }
 
-template <class... Args>
+template<class... Args>
 inline constexpr void error(
-    const std::format_string<Args...>& format,
-    Args&&... args,
-    const std::source_location& loc = std::source_location::current()
+    const FormatStringWithSourceLocation& format,
+    Args&&... args
 ) {
     _detail::getGlobalLogger().error<Args...>(
         format,
-        std::forward<Args>(args)...,
-        loc
+        std::forward<Args>(args)...
     );
 }
 
-template <class... Args>
+template<class... Args>
 inline constexpr void critical(
-    const std::format_string<Args...>& format,
-    Args&&... args,
-    const std::source_location& loc = std::source_location::current()
+    const FormatStringWithSourceLocation& format,
+    Args&&... args
 ) {
     _detail::getGlobalLogger().critical<Args...>(
         format,
-        std::forward<Args>(args)...,
-        loc
+        std::forward<Args>(args)...
     );
 }
 
