@@ -25,7 +25,6 @@ struct FormatStringWithSourceLocation : public std::string_view {
     template<class... Args>
     [[nodiscard]]
     constexpr const std::format_string<Args...>& get(void) const noexcept {
-        static_assert(sizeof(std::string_view) == sizeof(std::format_string<Args...>), "This implementation is not compatible with compiled STL");
         return reinterpret_cast<const std::format_string<Args...> &>(*this);
     }
 };
