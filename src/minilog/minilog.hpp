@@ -73,6 +73,10 @@ inline void setLevel(Level level) {
     _detail::getGlobalLogger().setLevel(level);
 }
 
+inline Level getLevel() {
+    _detail::getGlobalLogger().getLevel();
+}
+
 inline void setErrorsAsStderr(bool errorsAreStderr) {
     _detail::getGlobalLogger().setErrorsAreStderr(errorsAreStderr);
 }

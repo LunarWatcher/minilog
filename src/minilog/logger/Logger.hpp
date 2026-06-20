@@ -169,6 +169,10 @@ public:
     void setLevel(Level level) {
         this->level = level;
     }
+
+    Level getLevel() {
+        return level;
+    }
 };
 
 }
