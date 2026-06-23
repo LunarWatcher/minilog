@@ -75,7 +75,7 @@ protected:
         if (loggerName != "") {
             writeMessage(
                 std::format(
-                    "{}{:%T} | {:<8} | {:>32}:{} | {:<16} | {}{}\n",
+                    "{}{:%T} | {:<8} | {:<24} | {:<16} | {}{}\n",
                     this->supportsColour(level) ? getColour<level>() : "",
                     std::chrono::floor<std::chrono::milliseconds>(
                         std::chrono::system_clock::now()
@@ -90,10 +90,12 @@ protected:
                     // Could potentially make a thin alternate wrapper that uses __FILE_NAME__, but that won't be
                     // portable I imagine? Not sure if it builds on windows anyway, and that's an abstraction I can't be
                     // bothered dealing with
-                    std::filesystem::path(
-                        fmt.loc.file_name()
-                    ).filename().string(),
-                    fmt.loc.line(),
+                    std::format("{}:{}",
+                        std::filesystem::path(
+                            fmt.loc.file_name()
+                        ).filename().string(),
+                        fmt.loc.line()
+                    ),
                     loggerName,
                     std::format<Args...>(fmt.get<Args...>(), std::forward<Args>(args)...),
                     this->supportsColour(level) ? getReset() : ""
