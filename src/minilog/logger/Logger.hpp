@@ -105,16 +105,18 @@ protected:
         } else {
             writeMessage(
                 std::format(
-                    "{}{:%T} | {:<8} | {:>32}:{} | {}{}\n",
+                    "{}{:%T} | {:<8} | {:<24} | {}{}\n",
                     this->supportsColour(level) ? getColour<level>() : "",
                     std::chrono::floor<std::chrono::milliseconds>(
                         std::chrono::system_clock::now()
                     ),
                     magic::levelToString<level>(),
-                    std::filesystem::path(
-                        fmt.loc.file_name()
-                    ).filename().string(),
-                    fmt.loc.line(),
+                    std::format("{}:{}",
+                        std::filesystem::path(
+                            fmt.loc.file_name()
+                        ).filename().string(),
+                        fmt.loc.line()
+                    ),
                     std::format<Args...>(fmt.get<Args...>(), std::forward<Args>(args)...),
                     this->supportsColour(level) ? getReset() : ""
                 ),
